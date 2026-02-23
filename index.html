@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="K-AURA – luxury handmade scented candles rooted in Senegal, founded by Khoudia Diop.">
+<title>K-AURA | An Aura of Elegance, Rooted in Senegal</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel:wght@400;500;600&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-dark: #8B6914;
+  --black: #080808;
+  --black-2: #111111;
+  --black-3: #1a1a1a;
+  --white: #F5F0E8;
+  --white-dim: rgba(245,240,232,0.65);
+  --gold-gradient: linear-gradient(135deg,#8B6914 0%,#C9A84C 30%,#E8C97A 55%,#C9A84C 75%,#8B6914 100%);
+}
+
+/* RESET & BASE */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:90px;}
+body{background:var(--black);color:var(--white);font-family:'Raleway',sans-serif;font-weight:300;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--black);}
+::-webkit-scrollbar-thumb{background:var(--gold);}
+
+/* CART SIDEBAR */
+.cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.6);
+  z-index:2000;opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.cart-overlay.open{opacity:1;pointer-events:auto;}
+.cart-sidebar{
+  position:fixed;top:0;right:-420px;width:420px;max-width:100vw;
+  height:100vh;background:var(--black-2);z-index:2001;
+  padding:40px 32px;display:flex;flex-direction:column;
+  border-left:1px solid rgba(201,168,76,0.15);transition:right .4s ease;
+}
+.cart-sidebar.open{right:0;}
+.cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
+.cart-title{
+  font-family:'Cinzel',serif;font-size:16px;letter-spacing:6px;
+  background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-transform:uppercase;
+}
+.cart-close{background:none;border:none;color:var(--gold);font-size:22px;cursor:pointer;}
+.cart-items{flex:1;overflow-y:auto;}
+.cart-item{
+  display:flex;gap:16px;padding:16px 0;
+  border-bottom:1px solid rgba(201,168,76,0.1);align-items:center;
+}
+.cart-item-img{
+  width:70px;height:70px;object-fit:cover;
+  border:1px solid rgba(201,168,76,0.2);
+}
+.cart-item-info{flex:1;}
+.cart-item-name{
+  font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;
+  color:var(--white);margin-bottom:4px;
+}
+.cart-item-price{font-size:12px;color:var(--gold);letter-spacing:2px;}
+.cart-item-qty{display:flex;align-items:center;gap:10px;margin-top:8px;}
+.qty-btn{
+  background:none;border:1px solid rgba(201,168,76,0.3);color:var(--gold);
+  width:24px;height:24px;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.qty-btn:hover{background:var(--gold);color:var(--black);}
+.qty-num{font-size:13px;color:var(--white);min-width:20px;text-align:center;}
+.cart-remove{
+  background:none;border:none;color:rgba(201,168,76,0.4);
+  font-size:18px;cursor:pointer;transition:.2s;
+}
+.cart-remove:hover{color:var(--gold);}
+.cart-empty{
+  text-align:center;padding:60px 0;
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:18px;color:rgba(201,168,76,0.4);
+}
+.cart-footer{border-top:1px solid rgba(201,168,76,0.15);padding-top:24px;margin-top:16px;}
+.cart-total{display:flex;justify-content:space-between;margin-bottom:20px;}
+.cart-total-label{
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(201,168,76,0.6);
+}
+.cart-total-price{font-family:'Cinzel',serif;font-size:20px;color:var(--gold);}
+.checkout-btn{
+  width:100%;padding:16px;background:var(--gold);color:var(--black);
+  border:none;font-family:'Raleway',sans-serif;font-size:10px;
+  letter-spacing:5px;text-transform:uppercase;cursor:pointer;transition:.3s;
+}
+.checkout-btn:hover{background:var(--gold-light);}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:1000;padding:28px 64px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:.4s;
+}
+nav.scrolled{
+  background:rgba(8,8,8,0.96);padding:18px 64px;
+  border-bottom:1px solid rgba(201,168,76,0.12);backdrop-filter:blur(24px);
+}
+.nav-logo{
+  font-family:'Cinzel',serif;font-size:20px;letter-spacing:8px;
+  background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-decoration:none;font-weight:500;
+}
+.nav-center{display:flex;gap:44px;list-style:none;}
+.nav-center a{
+  color:var(--white-dim);text-decoration:none;
+  font-size:10px;letter-spacing:3.5px;text-transform:uppercase;
+  transition:color .3s;position:relative;
+}
+.nav-center a::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:1px;background:var(--gold);transition:width .3s;
+}
+.nav-center a:hover{color:var(--gold);}
+.nav-center a:hover::after{width:100%;}
+.nav-right{display:flex;align-items:center;gap:20px;}
+.lang-btn{
+  background:none;border:none;font-family:'Raleway',sans-serif;
+  font-size:10px;letter-spacing:2px;cursor:pointer;padding:3px 0;
+  text-transform:uppercase;transition:.3s;color:rgba(245,240,232,0.35);
+}
+.lang-btn.active{color:var(--gold);border-bottom:1px solid var(--gold);}
+.lang-sep{color:rgba(201,168,76,0.25);font-size:10px;}
+.cart-icon-btn{
+  background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;position:relative;
+  color:var(--white-dim);transition:.3s;
+}
+.cart-icon-btn:hover{color:var(--gold);}
+.cart-icon-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;}
+.cart-count{
+  position:absolute;top:-8px;right:-8px;
+  background:var(--gold);color:var(--black);
+  font-size:9px;font-weight:600;width:16px;height:16px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:.3s;
+}
+.cart-count.visible{opacity:1;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;}
+.hamburger span{width:22px;height:1px;background:var(--gold);display:block;}
+
+/* MOBILE MENU */
+.mobile-menu{
+  display:none;position:fixed;inset:0;background:rgba(8,8,8,0.98);
+  z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:40px;
+}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{
+  font-family:'Cinzel',serif;font-size:24px;letter-spacing:8px;
+  color:var(--white-dim);text-decoration:none;text-transform:uppercase;transition:.3s;
+}
+.mobile-menu a:hover{color:var(--gold);}
+.mobile-close{
+  position:absolute;top:28px;right:28px;background:none;
+  border:none;color:var(--gold);font-size:24px;cursor:pointer;
+}
+
+/* HERO */
+#hero{
+  height:100vh;min-height:700px;display:flex;align-items:center;
+  justify-content:center;position:relative;overflow:hidden;text-align:center;padding:0 20px;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 20%,rgba(201,168,76,0.07) 0%,transparent 55%),
+             radial-gradient(ellipse at 80% 80%,rgba(139,105,20,0.05) 0%,transparent 45%),
+             var(--black);
+}
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.particle{
+  position:absolute;width:1.5px;height:1.5px;background:var(--gold);
+  border-radius:50%;animation:float-p linear infinite;opacity:0;
+}
+@keyframes float-p{
+  0%{transform:translateY(110vh);opacity:0;}
+  8%{opacity:0.7;}
+  85%{opacity:0.2;}
+  100%{transform:translateY(-10px);opacity:0;}
+}
+.hero-content{position:relative;z-index:2;}
+.hero-eyebrow{
+  font-size:10px;letter-spacing:7px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:30px;animation:fadeUp 1.2s ease .3s both;
+}
+.hero-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(72px,13vw,160px);font-weight:400;letter-spacing:18px;
+  background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 60px rgba(201,168,76,0.15));
+  animation:fadeUp 1.2s ease .5s both;line-height:1;
+}
+.hero-subtitle{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2vw,20px);
+  font-style:italic;color:var(--white-dim);letter-spacing:4px;margin-top:16px;
+  animation:fadeUp 1.2s ease .7s both;
+}
+.hero-divider{
+  width:60px;height:1px;background:var(--gold-gradient);
+  margin:36px auto;animation:fadeUp 1.2s ease .9s both;
+}
+.hero-cta{
+  display:inline-block;padding:14px 48px;border:1px solid var(--gold);
+  color:var(--gold);text-decoration:none;font-size:10px;
+  letter-spacing:4px;text-transform:uppercase;transition:.4s;
+  animation:fadeUp 1.2s ease 1.1s both;position:relative;overflow:hidden;
+}
+.hero-cta::before{
+  content:'';position:absolute;inset:0;background:var(--gold);
+  transform:translateX(-100%);transition:transform .4s ease;z-index:-1;
+}
+.hero-cta:hover{color:var(--black);}
+.hero-cta:hover::before{transform:translateX(0);}
+.hero-scroll{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  animation:fadeUp 1s ease 1.5s both;
+}
+.hero-scroll span{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(201,168,76,0.5);}
+.scroll-line{
+  width:1px;height:50px;background:linear-gradient(to bottom,var(--gold),transparent);
+  animation:scroll-anim 1.5s ease infinite;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes scroll-anim{
+  0%{transform:scaleY(0);transform-origin:top;}
+  50%{transform:scaleY(1);transform-origin:top;}
+  51%{transform:scaleY(1);transform-origin:bottom;}
+  100%{transform:scaleY(0);transform-origin:bottom;}
+}
+
+/* MARQUEE */
+.marquee-wrap{
+  border-top:1px solid rgba(201,168,76,0.12);
+  border-bottom:1px solid rgba(201,168,76,0.12);
+  padding:20px 0;overflow:hidden;background:rgba(201,168,76,0.02);
+}
+.marquee-track{
+  display:flex;gap:60px;animation:marquee 18s linear infinite;white-space:nowrap;
+}
+.marquee-track span{
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:5px;
+  color:rgba(201,168,76,0.4);text-transform:uppercase;
+}
+.marquee-track .dot{color:var(--gold);font-size:16px;}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* SECTION BASE */
+section{padding:120px 64px;}
+.section-eyebrow{
+  font-size:9px;letter-spacing:6px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:16px;
+}
+.section-title{
+  font-family:'Cinzel',serif;font-size:clamp(28px,4vw,52px);
+  font-weight:400;background:var(--gold-gradient);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:24px;
+}
+.gold-line{width:50px;height:1px;background:var(--gold-gradient);margin-bottom:40px;}
+
+/* ABOUT */
+#about{
+  display:grid;grid-template-columns:1fr 1fr;gap:100px;
+  align-items:center;max-width:1300px;margin:0 auto;
+}
+.about-img-wrap{position:relative;}
+.about-img-frame{
+  position:absolute;inset:-16px;border:1px solid rgba(201,168,76,0.2);pointer-events:none;
+}
+.about-img-corner{position:absolute;width:20px;height:20px;border-color:var(--gold);border-style:solid;}
+.about-img-corner.tl{top:-16px;left:-16px;border-width:1px 0 0 1px;}
+.about-img-corner.tr{top:-16px;right:-16px;border-width:1px 1px 0 0;}
+.about-img-corner.bl{bottom:-16px;left:-16px;border-width:0 0 1px 1px;}
+.about-img-corner.br{bottom:-16px;right:-16px;border-width:0 1px 1px 0;}
+.about-img{
+  width:100%;aspect-ratio:4/5;object-fit:cover;
+  filter:grayscale(20%) contrast(1.05);display:block;
+}
+.about-text{
+  font-family:'Cormorant Garamond',serif;font-size:18px;
+  line-height:1.9;color:var(--white-dim);margin-bottom:24px;
+}
+.about-signature{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:22px;color:var(--gold);margin-top:32px;
+}
+.about-founder-title{
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(201,168,76,0.5);margin-top:6px;
+}
+
+/* PRODUCTS */
+#products{background:linear-gradient(to bottom,var(--black),var(--black-3),var(--black));}
+.products-inner{max-width:1300px;margin:0 auto;}
+.products-header{text-align:center;margin-bottom:80px;}
+.products-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:2px;
+  background:rgba(201,168,76,0.08);
+}
+.product-card{background:var(--black-2);position:relative;overflow:hidden;cursor:pointer;}
+.product-img-wrap{overflow:hidden;aspect-ratio:1/1;}
+.product-img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .8s ease,filter .8s ease;filter:brightness(0.92);display:block;
+}
+.product-card:hover .product-img{transform:scale(1.06);filter:brightness(1.05);}
+.product-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(8,8,8,0.95) 0%,rgba(8,8,8,0.3) 50%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:36px 32px;
+}
+.product-tag{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.product-name{
+  font-family:'Cinzel',serif;font-size:clamp(16px,2vw,24px);
+  font-weight:400;color:var(--white);margin-bottom:6px;line-height:1.2;
+}
+.product-sub{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:14px;color:var(--white-dim);margin-bottom:20px;
+}
+.product-footer{display:flex;align-items:center;justify-content:space-between;}
+.product-price{font-family:'Cinzel',serif;font-size:18px;color:var(--gold);}
+.product-price-sub{
+  font-size:9px;letter-spacing:2px;color:rgba(201,168,76,0.5);margin-top:2px;
+}
+.product-btn{
+  padding:9px 24px;border:1px solid rgba(201,168,76,0.5);
+  color:var(--gold);font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;background:none;cursor:pointer;
+  transition:.3s;font-family:'Raleway',sans-serif;
+}
+.product-btn:hover{background:var(--gold);color:var(--black);}
+.product-badge{
+  position:absolute;top:20px;left:20px;background:var(--gold);color:var(--black);
+  font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;font-weight:500;
+}
+
+/* TESTIMONIALS */
+#testimonials{max-width:1200px;margin:0 auto;text-align:center;}
+.testimonials-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+  margin-top:60px;background:rgba(201,168,76,0.08);
+}
+.testimonial-card{background:var(--black-2);padding:44px 32px;position:relative;}
+.testimonial-card::before{
+  content:'\201C';font-family:'Cormorant Garamond',serif;font-size:80px;
+  color:rgba(201,168,76,0.15);position:absolute;top:10px;left:24px;line-height:1;
+}
+.testimonial-text{
+  font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;
+  line-height:1.8;color:var(--white-dim);margin-bottom:28px;position:relative;z-index:1;
+}
+.testimonial-stars{color:var(--gold);font-size:12px;letter-spacing:3px;margin-bottom:14px;}
+.testimonial-author{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);}
+.testimonial-location{font-size:9px;letter-spacing:2px;color:rgba(201,168,76,0.4);margin-top:4px;}
+
+/* CONTACT */
+#contact{background:var(--black-3);}
+.contact-inner{
+  max-width:1200px;margin:0 auto;display:grid;
+  grid-template-columns:1fr 1fr;gap:100px;align-items:start;
+}
+.contact-detail{display:flex;align-items:flex-start;gap:16px;margin-bottom:28px;}
+.contact-icon{color:var(--gold);font-size:16px;margin-top:2px;min-width:20px;}
+.contact-label{
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(201,168,76,0.5);margin-bottom:4px;
+}
+.contact-value{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--white-dim);}
+.contact-value a{color:inherit;text-decoration:none;transition:.3s;}
+.contact-value a:hover{color:var(--gold);}
+.social-links{display:flex;gap:16px;margin-top:40px;}
+.social-link{
+  width:42px;height:42px;border:1px solid rgba(201,168,76,0.25);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold);text-decoration:none;font-size:14px;transition:.3s;
+}
+.social-link:hover{background:var(--gold);color:var(--black);border-color:var(--gold);}
+.contact-form{display:flex;flex-direction:column;gap:20px;}
+.form-group{position:relative;}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;background:rgba(255,255,255,0.02);border:none;
+  border-bottom:1px solid rgba(201,168,76,0.2);padding:14px 0;
+  color:var(--white);font-family:'Raleway',sans-serif;
+  font-size:13px;font-weight:300;outline:none;transition:border-color .3s;
+}
+.form-group input::placeholder,.form-group textarea::placeholder{
+  color:rgba(245,240,232,0.25);font-size:11px;letter-spacing:2px;text-transform:uppercase;
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-bottom-color:var(--gold);}
+.form-group textarea{resize:none;height:100px;}
+.form-group select{-webkit-appearance:none;background:transparent;}
+.form-group select option{background:var(--black-2);}
+.submit-btn{
+  padding:16px 0;background:none;border:1px solid var(--gold);color:var(--gold);
+  font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:5px;
+  text-transform:uppercase;cursor:pointer;transition:.4s;position:relative;overflow:hidden;
+}
+.submit-btn::before{
+  content:'';position:absolute;inset:0;background:var(--gold);
+  transform:scaleX(0);transform-origin:left;transition:transform .4s ease;z-index:-1;
+}
+.submit-btn:hover{color:var(--black);}
+.submit-btn:hover::before{transform:scaleX(1);}
+.form-msg{font-size:11px;letter-spacing:2px;text-align:center;padding:12px;display:none;}
+.form-msg.success{color:var(--gold);border:1px solid rgba(201,168,76,0.3);}
+
+/* FOOTER */
+footer{
+  border-top:1px solid rgba(201,168,76,0.12);
+  padding:60px 64px 40px;display:flex;flex-direction:column;
+  align-items:center;gap:32px;text-align:center;
+}
+.footer-logo{
+  font-family:'Cinzel',serif;font-size:28px;letter-spacing:12px;
+  background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.footer-slogan{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:16px;color:rgba(201,168,76,0.5);letter-spacing:2px;
+}
+.footer-links{
+  display:flex;gap:40px;list-style:none;flex-wrap:wrap;justify-content:center;
+}
+.footer-links a{
+  color:rgba(245,240,232,0.3);text-decoration:none;font-size:9px;
+  letter-spacing:3px;text-transform:uppercase;transition:.3s;
+}
+.footer-links a:hover{color:var(--gold);}
+.footer-copy{font-size:9px;letter-spacing:2px;color:rgba(245,240,232,0.2);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease,transform .9s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .9s ease,transform .9s ease;}
+.reveal-left.visible{opacity:1;transform:translateX(0);}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .9s ease,transform .9s ease;}
+.reveal-right.visible{opacity:1;transform:translateX(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:20px 28px;}
+  nav.scrolled{padding:14px 28px;}
+  .nav-center{display:none;}
+  .hamburger{display:flex;}
+  section{padding:80px 28px;}
+  #about{grid-template-columns:1fr;gap:40px;}
+  .products-grid{grid-template-columns:1fr;}
+  .testimonials-grid{grid-template-columns:1fr;}
+  .contact-inner{grid-template-columns:1fr;gap:60px;}
+  footer{padding:60px 28px 40px;}
+  .hero-title{letter-spacing:8px;}
+  .cart-sidebar{width:100vw;}
+}
+@media(max-width:500px){
+  .hero-title{font-size:48px;letter-spacing:5px;}
+}
+</style>
+</head>
+<body>
+
+<!-- CART -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <span class="cart-title">Your Cart</span>
+    <button class="cart-close" type="button" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">Your cart is empty</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-price" id="cartTotal">$0</span>
+    </div>
+    <button class="checkout-btn" type="button" onclick="checkout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" type="button" onclick="closeMobile()">✕</button>
+  <a href="#about" onclick="closeMobile()">Our Story</a>
+  <a href="#products" onclick="closeMobile()">Collection</a>
+  <a href="#testimonials" onclick="closeMobile()">Reviews</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">K-AURA</a>
+  <ul class="nav-center">
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#products">Collection</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-btn active" type="button" onclick="setLang('en',event)">EN</button>
+    <span class="lang-sep">|</span>
+    <button class="lang-btn" type="button" onclick="setLang('fr',event)">FR</button>
+    <button class="cart-icon-btn" type="button" onclick="openCart()" aria-label="Open cart">
+      <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="hamburger" type="button" onclick="openMobile()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="particles" id="particles"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Luxury Candles · Handmade with Love</p>
+    <h1 class="hero-title">K-AURA</h1>
+    <p class="hero-subtitle">An aura of elegance, rooted in Senegal</p>
+    <div class="hero-divider"></div>
+    <a href="#products" class="hero-cta">Discover the Collection</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Handmade with Love</span><span class="dot">✦</span>
+    <span>Luxury Scented Candles</span><span class="dot">✦</span>
+    <span>Rooted in Senegal</span><span class="dot">✦</span>
+    <span>Chicago, USA</span><span class="dot">✦</span>
+    <span>K-AURA</span><span class="dot">✦</span>
+    <span>An Aura of Elegance</span><span class="dot">✦</span>
+    <span>Handmade with Love</span><span class="dot">✦</span>
+    <span>Luxury Scented Candles</span><span class="dot">✦</span>
+    <span>Rooted in Senegal</span><span class="dot">✦</span>
+    <span>Chicago, USA</span><span class="dot">✦</span>
+    <span>K-AURA</span><span class="dot">✦</span>
+    <span>An Aura of Elegance</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section>
+  <div id="about">
+    <div class="about-img-wrap reveal-left">
+      <div class="about-img-frame">
+        <div class="about-img-corner tl"></div>
+        <div class="about-img-corner tr"></div>
+        <div class="about-img-corner bl"></div>
+        <div class="about-img-corner br"></div>
+      </div>
+      <img class="about-img" src="velour-bloom.jpg" alt="K-AURA candles by Khoudia Diop">
+    </div>
+    <div class="reveal-right">
+      <p class="section-eyebrow">Our Story</p>
+      <h2 class="section-title">Born from Senegal, Made for the World</h2>
+      <div class="gold-line"></div>
+      <p class="about-text">
+        K-AURA was created by Khoudia Diop to celebrate the warmth, beauty and soul of Senegal.
+        Each candle is poured by hand, blending premium wax, carefully selected fragrance oils
+        and thoughtful details that honor West African heritage.
+      </p>
+      <p class="about-text">
+        Every flame is an experience: soft light, deep scent, and a moment of calm in a busy world.
+        K-AURA invites you to slow down, breathe, and surround yourself with quiet luxury.
+      </p>
+      <p class="about-signature">Khoudia Diop</p>
+      <p class="about-founder-title">Founder, K-AURA</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="products-inner">
+    <div class="products-header reveal">
+      <p class="section-eyebrow">Handcrafted Luxury</p>
+      <h2 class="section-title">Our Collection</h2>
+      <div class="gold-line" style="margin:0 auto;"></div>
+    </div>
+    <div class="products-grid">
+
+      <!-- Velour Bloom -->
+      <div class="product-card reveal">
+        <div class="product-badge">Best Seller</div>
+        <div class="product-img-wrap">
+          <img class="product-img" src="velour-bloom.jpg" alt="Velour Bloom candle">
+        </div>
+        <div class="product-overlay">
+          <p class="product-tag">Floral Collection</p>
+          <h3 class="product-name">Velour Bloom</h3>
+          <p class="product-sub">Soft rose petals, creamy notes and a velvety finish.</p>
+          <div class="product-footer">
+            <div>
+              <p class="product-price">$30</p>
+              <p class="product-price-sub">Free shipping</p>
+            </div>
+            <button class="product-btn" type="button"
+              onclick="addToCart('Velour Bloom',30,'velour-bloom.jpg',this)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rich Auntie Vibe -->
+      <div class="product-card reveal">
+        <div class="product-img-wrap">
+          <img class="product-img" src="rich-auntie-vibe.jpg" alt="Rich Auntie Vibe candle">
+        </div>
+        <div class="product-overlay">
+          <p class="product-tag">Signature Collection</p>
+          <h3 class="product-name">Rich Auntie Vibe</h3>
+          <p class="product-sub">Golden shimmer, warm amber and confident energy.</p>
+          <div class="product-footer">
+            <div>
+              <p class="product-price">$30</p>
+              <p class="product-price-sub">Free shipping</p>
+            </div>
+            <button class="product-btn" type="button"
+              onclick="addToCart('Rich Auntie Vibe',30,'rich-auntie-vibe.jpg',this)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dakar Midnight -->
+      <div class="product-card reveal">
+        <div class="product-badge">New</div>
+        <div class="product-img-wrap">
+          <img class="product-img" src="dakar-midnight.jpg" alt="Dakar Midnight candle">
+        </div>
+        <div class="product-overlay">
+          <p class="product-tag">Prestige Collection</p>
+          <h3 class="product-name">Dakar Midnight</h3>
+          <p class="product-sub">Gold leaf, deep woods and a night breeze over the city.</p>
+          <div class="product-footer">
+            <div>
+              <p class="product-price">$30</p>
+              <p class="product-price-sub">Free shipping</p>
+            </div>
+            <button class="product-btn" type="button"
+              onclick="addToCart('Dakar Midnight',30,'dakar-midnight.jpg',this)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Golden Hour -->
+      <div class="product-card reveal">
+        <div class="product-img-wrap">
+          <img class="product-img" src="golden-hour.jpg" alt="Golden Hour candle">
+        </div>
+        <div class="product-overlay">
+          <p class="product-tag">Limited Edition</p>
+          <h3 class="product-name">Golden Hour</h3>
+          <p class="product-sub">Sunset citrus, soft vanilla and a golden glow.</p>
+          <div class="product-footer">
+            <div>
+              <p class="product-price">$30</p>
+              <p class="product-price-sub">Limited stock</p>
+            </div>
+            <button class="product-btn" type="button"
+              onclick="addToCart('Golden Hour',30,'golden-hour.jpg',this)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div id="testimonials" class="reveal">
+    <p class="section-eyebrow">Client Reviews</p>
+    <h2 class="section-title">What They Say</h2>
+    <div class="gold-line" style="margin:0 auto;"></div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          "Velour Bloom turns my living room into a sanctuary. Elegant, subtle and unforgettable."
+        </p>
+        <p class="testimonial-stars">★★★★★</p>
+        <p class="testimonial-author">Sophie M.</p>
+        <p class="testimonial-location">Paris, France</p>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          "Rich Auntie Vibe is exactly that – rich, warm and full of attitude. My new signature gift."
+        </p>
+        <p class="testimonial-stars">★★★★★</p>
+        <p class="testimonial-author">Amara D.</p>
+        <p class="testimonial-location">Dakar, Senegal</p>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          "Dakar Midnight feels like a night drive by the ocean. Deep, luxurious and beautifully made."
+        </p>
+        <p class="testimonial-stars">★★★★★</p>
+        <p class="testimonial-author">James K.</p>
+        <p class="testimonial-location">Chicago, USA</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="reveal-left">
+      <p class="section-eyebrow">Get in Touch</p>
+      <h2 class="section-title">Contact Us</h2>
+      <div class="gold-line"></div>
+
+      <div class="contact-detail">
+        <div class="contact-icon">✉</div>
+        <div>
+          <p class="contact-label">Email</p>
+          <p class="contact-value"><a href="mailto:hello@k-aura.com">hello@k-aura.com</a></p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="contact-icon">📍</div>
+        <div>
+          <p class="contact-label">Location</p>
+          <p class="contact-value">Dakar, Senegal · Chicago, USA</p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="contact-icon">📱</div>
+        <div>
+          <p class="contact-label">Instagram</p>
+          <p class="contact-value"><a href="#">@k.aura_official</a></p>
+        </div>
+      </div>
+
+      <div class="social-links">
+        <a class="social-link" href="#" aria-label="Instagram">IG</a>
+        <a class="social-link" href="#" aria-label="TikTok">TK</a>
+        <a class="social-link" href="#" aria-label="Facebook">FB</a>
+      </div>
+    </div>
+
+    <div class="reveal-right">
+      <form class="contact-form" onsubmit="submitForm(event)">
+        <div class="form-group"><input type="text" placeholder="Your Name" required></div>
+        <div class="form-group"><input type="email" placeholder="Your Email" required></div>
+        <div class="form-group">
+          <select>
+            <option value="" disabled selected>Select a product</option>
+            <option>Velour Bloom</option>
+            <option>Rich Auntie Vibe</option>
+            <option>Dakar Midnight</option>
+            <option>Golden Hour</option>
+          </select>
+        </div>
+        <div class="form-group"><textarea placeholder="Your Message"></textarea></div>
+        <button class="submit-btn" type="submit">Send Message</button>
+        <div class="form-msg success" id="formMsg">✓ Message sent — we will be in touch soon.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">K-AURA</div>
+  <p class="footer-slogan">An aura of elegance, rooted in Senegal</p>
+  <ul class="footer-links">
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#products">Collection</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 K-AURA. All rights reserved. Founded by Khoudia Diop.</p>
+</footer>
+
+<script>
+// NAV SCROLL
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50);
+});
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+  link.addEventListener('click',e=>{
+    e.preventDefault();
+    const target=document.querySelector(link.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+// MOBILE MENU
+function openMobile(){document.getElementById('mobileMenu').classList.add('open');}
+function closeMobile(){document.getElementById('mobileMenu').classList.remove('open');}
+
+// LANG BUTTON (just visual)
+function setLang(lang,e){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+}
+
+// REVEAL
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible');});
+},{threshold:0.15});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>observer.observe(el));
+
+// PARTICLES
+const particles=document.getElementById('particles');
+for(let i=0;i<25;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=(8+Math.random()*12)+'s';
+  p.style.animationDelay=(Math.random()*10)+'s';
+  particles.appendChild(p);
+}
+
+// CART
+let cart=[];
+function openCart(){
+  document.getElementById('cartSidebar').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('cartSidebar').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+function addToCart(name,price,img,btn){
+  const existing=cart.find(i=>i.name===name);
+  if(existing){existing.qty++;}
+  else{cart.push({name,price,img,qty:1});}
+  const original=btn.textContent;
+  btn.textContent='✓ Added';
+  btn.style.background='var(--gold)';
+  btn.style.color='var(--black)';
+  setTimeout(()=>{btn.textContent=original;btn.style.background='';btn.style.color='';},1200);
+  renderCart();openCart();
+}
+function removeFromCart(i){cart.splice(i,1);renderCart();}
+function changeQty(i,delta){
+  cart[i].qty+=delta;
+  if(cart[i].qty<=0)cart.splice(i,1);
+  renderCart();
+}
+function renderCart(){
+  const container=document.getElementById('cartItems');
+  const empty=document.getElementById('cartEmpty');
+  const countEl=document.getElementById('cartCount');
+  const totalEl=document.getElementById('cartTotal');
+
+  const totalItems=cart.reduce((s,it)=>s+it.qty,0);
+  const totalPrice=cart.reduce((s,it)=>s+it.price*it.qty,0);
+
+  countEl.textContent=totalItems;
+  countEl.classList.toggle('visible',totalItems>0);
+  totalEl.textContent='$'+totalPrice;
+
+  // remove existing items except empty
+  Array.from(container.children).forEach(child=>{if(child!==empty)container.removeChild(child);});
+
+  if(cart.length===0){empty.style.display='block';return;}
+  empty.style.display='none';
+
+  cart.forEach((item,i)=>{
+    const el=document.createElement('div');
+    el.className='cart-item';
+    el.innerHTML=`
+      <img class="cart-item-img" src="${item.img}" alt="${item.name}">
+      <div class="cart-item-info">
+        <p class="cart-item-name">${item.name}</p>
+        <p class="cart-item-price">$${item.price}</p>
+        <div class="cart-item-qty">
+          <button type="button" class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button type="button" class="qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+      </div>
+      <button type="button" class="cart-remove" onclick="removeFromCart(${i})">✕</button>
+    `;
+    container.insertBefore(el,empty);
+  });
+}
+function checkout(){
+  if(cart.length===0){alert('Your cart is empty.');return;}
+  const total=cart.reduce((s,it)=>s+it.price*it.qty,0);
+  alert('Checkout simulated.\nTotal: $'+total+'\nWe will contact you at hello@k-aura.com to finalize payment.');
+  cart=[];renderCart();closeCart();
+}
+
+// CONTACT FORM
+function submitForm(e){
+  e.preventDefault();
+  const msg=document.getElementById('formMsg');
+  msg.style.display='block';
+  setTimeout(()=>msg.style.display='none',4000);
+  e.target.reset();
+}
+</script>
+</body>
+</html>
